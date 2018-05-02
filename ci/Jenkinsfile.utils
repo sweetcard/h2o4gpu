@@ -146,12 +146,12 @@ void publishRuntimeToS3(BuildInfo buildInfo,String extratag) {
     }
 }
 
-void runTests(BuildInfo buildInfo, String dockerimage, String extratag, String platform, String target) {
+void runTests(BuildInfo buildInfo, String dockerimage, String extratag, String platform, String target, String data_dirs) {
     echo "Running tests"
 
    try {
         sh """
-            DATA_DIRS="-v /home/0xdiag/h2o4gpu/data:/data -v /home/0xdiag/h2o4gpu/open_data:/open_data" \
+            DATA_DIRS=${data_dirs} \
             CONTAINER_NAME=${CONTAINER_NAME} \
             extratag=${extratag} \
             dockerimage=${dockerimage} \
@@ -178,7 +178,6 @@ void buildOnLinux(String dockerimage, String extratag, String platform, String s
         try {
             sh """
                 git clean -f -d -x
-                DATA_DIRS="-v /home/0xdiag/h2o4gpu/data:/data -v /home/0xdiag/h2o4gpu/open_data:/open_data" \
                 CONTAINER_NAME=${CONTAINER_NAME} \
                 extratag=${extratag} \
                 dockerimage=${dockerimage} \
@@ -202,7 +201,7 @@ void buildOnLinux(String dockerimage, String extratag, String platform, String s
     }
 }
 
-void buildRuntime(BuildInfo buildInfo, String dockerimage, String platform, String extratag) {
+void buildRuntime(BuildInfo buildInfo, String dockerimage, String platform, String extratag, String data_dirs) {
     echo "Building runtime"
 
     def buckettype = "snapshots"
@@ -213,7 +212,7 @@ void buildRuntime(BuildInfo buildInfo, String dockerimage, String platform, Stri
     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "awsArtifactsUploader"]]) {
         try {
             sh """
-                DATA_DIRS="-v /home/0xdiag/h2o4gpu/data:/data -v /home/0xdiag/h2o4gpu/open_data:/open_data" \
+                DATA_DIRS=${data_dirs} \
                 CONTAINER_NAME=${CONTAINER_NAME} \
                 versionTag=${versionTag} \
                 extratag=${extratag} \

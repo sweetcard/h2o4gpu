@@ -126,7 +126,7 @@ pipeline {
                         echo "After Stashed wheel file:"
                         ls -l src/interface_py/dist/${platform}/  || true
                        """
-                    h2o4gpuUtils.runTests(buildInfo.get(), "${cuda}", "${extratag}", "${platform}", "${testtype}")
+                    h2o4gpuUtils.runTests(buildInfo.get(), "${cuda}", "${extratag}", "${platform}", "${testtype}", "${data_dirs}")
                 }
                 retryWithTimeout(500 /* seconds */, 5 /* retries */) {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "awsArtifactsUploader"]]) {
@@ -176,7 +176,7 @@ pipeline {
                     sh 'echo "Stashed version file:" && ls -l build/'
                 }
                 script {
-                    h2o4gpuUtils.buildRuntime(buildInfo.get(), "${cudart}", "${platform}", "${extratag}")
+                    h2o4gpuUtils.buildRuntime(buildInfo.get(), "${cudart}", "${platform}", "${extratag}", "${data_dirs}")
                 }
                 retryWithTimeout(1000 /* seconds */, 5 /* retries */) {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "awsArtifactsUploader"]]) {
