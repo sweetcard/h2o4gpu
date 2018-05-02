@@ -151,7 +151,7 @@ void runTests(BuildInfo buildInfo, String dockerimage, String extratag, String p
 
    try {
         sh """
-            DATA_DIRS=${data_dirs} \
+            DATA_DIRS="${data_dirs}" \
             CONTAINER_NAME=${CONTAINER_NAME} \
             extratag=${extratag} \
             dockerimage=${dockerimage} \
@@ -212,7 +212,7 @@ void buildRuntime(BuildInfo buildInfo, String dockerimage, String platform, Stri
     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: "awsArtifactsUploader"]]) {
         try {
             sh """
-                DATA_DIRS=${data_dirs} \
+                DATA_DIRS="${data_dirs}" \
                 CONTAINER_NAME=${CONTAINER_NAME} \
                 versionTag=${versionTag} \
                 extratag=${extratag} \
